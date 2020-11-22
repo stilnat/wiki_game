@@ -1,0 +1,74 @@
+/* GENERAL*/
+
+h1 { font-family:American Typewriter, serif; text-transform: uppercase; color: rgb(70,70,70); font-size: 35px;}
+
+ul{ list-style:none;}
+
+a{ text-decoration: none; color: #444}
+
+.wrapper{ width:  940px; margin : 0 auto; padding : 0 10px;}
+
+.button-wrapper{background-color: darkgray}
+
+body{background-color: rgb(245,245,245); font-family: cursive;}
+
+form{ margin: 60px 0 20px 0;}
+
+input[type = "text"]{ padding:10px; font-size: 20px; margin-right: 30px; border: 2px solid #ddd; border-radius: 3px;}
+
+/*FOOTER*/
+ 
+footer{height: 260px; background-color: gray;nborder-top:  10px solid rgb(151,206,236);}
+
+footer h1{color: #c9e6fd; text-align: center; padding-top : 80px;}
+
+.copyright{ text-align: center; padding-top: 20px;}
+
+/*HEADER*/
+
+header {background-color: rgb(245,245,245); height : 150px; padding-bottom: 20px; border-bottom: 10px solid rgb(151,206,236); padding-bottom: 20px;}
+
+#header-image{height: 150px; width: 150px; margin-right: 0px; background: url('images/wikilogo.png')  no-repeat center; background-size: 120px 120px; float: left;}
+
+#header-title{float: left; text-align: center; height: 150px; width: 150px;}
+
+header nav{float: right; margin-top: 50px;}
+
+header nav ul li{ display: inline-block; font-weight: bold; float :left; font-size: 18px;}
+
+header nav ul li a{ text-transform: uppercase; margin-right: 30px;}
+
+/*PLAY*/
+
+#play{background: linear-gradient(rgb(245,245,245),#c9e6fd); height: 580px;}
+
+#play .button-wrapper {width : 500px; height : 300px; border-radius: 50px; text-align: center; margin: 50px auto 0px auto; padding : 0px 0px 0px 0px; }
+
+#play .button-1{color: rgb(70,70,70); font-size: 20px; font-weight : bold; background-color: #c9e6fd; border-style: none; padding: 11px; border-radius: 10px; line-height:440px; }
+
+
+/*CONTACT*/
+
+#contact{padding: 30px 0; text-align: center; background-color:#c9e6fd; }
+
+#contact h3{ border-bottom: 1px solid #bbb; margin: 0 auto 20px auto; width: 300px;}
+
+label{ font-weight: bold; font-size: 20px; margin-right: 10px;}
+
+
+.button-3{ color: white; font-size: 20px; font-weight : bold; background-color: darkgrey; border-style: none; padding: 11px; border-radius: 3px;}
+
+
+/*SETTINGS*/
+
+#settings{padding-left: 30px;}
+
+#settings form input{margin-bottom: 20px;}
+
+#settings form select{font-size: 20px; margin-right: 30px; border: 2px solid #ddd; border-radius: 3px}
+
+
+/*WIKI-PAGES*/
+
+
+/*GAME-INFO*/
