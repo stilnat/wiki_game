@@ -4,25 +4,30 @@
 <html>
     <head>  <!-- Tout ce qui est pas dans le contenu -->
         <title> game setup </title> <!-- Titre de l'onglet -->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
+        <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"> </script>
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.32.2/es6-shim.min.js"> </script>
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/jquery.history.js"> </script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="styles.css">
-        
     </head>
-    
+
     <body>
-        
         <header>
             <div class="wrapper">
                 <div>
                     <div id="header-image">
-                    
+
                     </div>
                     <div id="header-title">
                         <h1> The Wiki Game</h1>
                     </div>
-                
+
                 </div>
-               
-                
+
                 <nav>
                     <ul>
                         <li> <a href="connexion"> Connexion </a></li>
@@ -34,24 +39,98 @@
             </div>
         </header>
         
-        <section id="wiki-pages">
-           
-           
-        </section>
-        
         <section id="game-info">
-           
-           
-        </section>
-        
 
-        
+            <p style="font-size: 40px" id = "word-to-find"> word to find : </p>
+        </section>
+
+        <section id="wiki-pages">
+            <div class='container'>
+                <h1 id="wiki-title">MiniWiki</h1>
+                <div id="content"></div>
+
+                <script>
+                    FirstPageTitle ='';
+                    TargetPageTitle = '';
+                    
+                    var titleElem = document.getElementById('wiki-title');
+                    var contentElem = document.getElementById('content');
+                    var stylesheetElem = document.getElementById('style');
+                    
+                    function extractTitle(title) {
+                        return title.replace(/(^.\/)|(#.*$)/g, '').replace(/_/g, ' ');
+                    }
+                    
+                    function loadPage(title) {
+                        var url = 'https://en.wikipedia.org:443/api/rest_v1/page/html/' + encodeURIComponent(title);
+                        FirstPageTitle = title;
+                        
+
+                        console.log(FirstPageTitle);
+                        console.log(TargetPageTitle);
+                        if(FirstPageTitle == TargetPageTitle){
+                            console.log("success");
+                            document.getElementById('word-to-find').innerText = "Sucess !";
+                        }
+                        else{
+                            document.getElementById('word-to-find').innerText = "word to find : " + TargetPageTitle;
+                            return $.ajax(url).then(function (data) {
+                                var doc = (new DOMParser()).parseFromString(data, 'text/html');
+                                // Use mediawiki content stylesheet
+                                $(stylesheetElem).remove();
+                                stylesheetElem = doc.querySelector('head link[rel="stylesheet"]');
+                                $('head').append(stylesheetElem);
+                                // Update title and content
+                                $(titleElem).text(doc.title.replace(/^User:Cscott\//, '').replace(/_/g, ' '));
+                                var $content = $(contentElem).empty();
+                                Array.from(doc.body.attributes).forEach(function (attr) {
+                                    $content.attr(attr.name, attr.value);
+                                });
+                                $content.append(Array.from(doc.body.children));
+                                // Handle redirects
+                                $('link[rel="mw:PageProp/redirect"]').replaceWith(function() {
+                                    return $('<a rel="mw:WikiLink">REDIRECT</a>').attr('href', $(this).attr('href'));
+                                });
+                                // Add click handler to wiki links
+                                $('a[rel="mw:WikiLink"]', $content).click(function (e) {
+                                    var newTitle = extractTitle($(e.currentTarget).attr('href'));
+                                    History.pushState(null, newTitle, "?title="+encodeURIComponent(newTitle));
+                                    return false; // Don't use normal href handler
+                                });
+                            });
+                        }
+                    }
+
+                    // Make the back button work
+                    History.replaceState(null, '', ''); // Ensure a state change later
+
+                    $(window).on('statechange', function() {
+                        loadPage(History.getState().title);
+                    });
+
+                    //fetch the target page
+                    $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function(data){
+                        //TargetPageTitle = data.query.random[0].title;
+                        TargetPageTitle = "Jesus"
+                    });
+
+                    //fetch the random start page
+                    $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function(data){
+                        FirstPageTitle = data.query.random[0].title;
+                        // Load the start page
+                        History.replaceState(null, FirstPageTitle, '');
+                    });
+                </script>
+            </div>
+        </section>
+
+
         <footer>
             <h1> The Wiki Game </h1>
             <div class="copyright">
-            Copyright 2020
+                Copyright 2020
             </div>
         </footer>
-        
+
     </body>
 </html>

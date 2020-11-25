@@ -70,5 +70,8 @@ label{ font-weight: bold; font-size: 20px; margin-right: 10px;}
 
 /*WIKI-PAGES*/
 
+#start-page{float: left;}
+#end-page{float: right;}
+
 
 /*GAME-INFO*/
