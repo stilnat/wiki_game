@@ -12,7 +12,7 @@
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="styles.css">
+        <!--<link rel="stylesheet" href="styles.css"> -->
     </head>
 
     <body>
@@ -117,6 +117,7 @@
                     //fetch the random start page
                     $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function(data){
                         FirstPageTitle = data.query.random[0].title;
+                        FirstPageTitle = 'Science';
                         // Load the start page
                         History.replaceState(null, FirstPageTitle, '');
                     });
