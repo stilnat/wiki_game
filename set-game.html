@@ -5,24 +5,24 @@
     <head>  <!-- Tout ce qui est pas dans le contenu -->
         <title> game setup </title> <!-- Titre de l'onglet -->
         <link rel="stylesheet" href="styles.css">
-        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
     </head>
-    
+
     <body>
-        
+
         <header>
             <div class="wrapper">
                 <div>
                     <div id="header-image">
-                    
+
                     </div>
                     <div id="header-title">
                         <h1> The Wiki Game</h1>
                     </div>
-                
+
                 </div>
-               
-                
+
+
                 <nav>
                     <ul>
                         <li> <a href="connexion"> Connexion </a></li>
@@ -33,36 +33,46 @@
                 </nav>
             </div>
         </header>
-        
+
+
+
         <section id="settings">
-            <form> 
-                <label for "nb-rounds">Number of rounds :</label>
-                <input type="text" id="nb-rounds" placeholder="enter a number"> <br>
-                <label for "email"> Time limit :</label> 
-                <input type="text" id="email" placeholder="enter a time in minutes"> <br>
             
-            <form> 
-                <select name="layout-select">
-                    <option value="one page"> One page  </option>
-                    <option value="both pages"> Both pages</option>
-                </select>
-            </form>
-            
-            <form>
-                <input type="submit" value = "OK" class ="button-3">
-            </form>
-           
-            
-            
-           
+            <label for "time"> Time limit :</label> 
+            <input type="text" id="time" placeholder="enter a duration (s)"> <br>
+
+            <button type="button" id="confirm_settings">OK</button>
+
+
+
+            <div id="play-link">  
+                link to start :
+            </div>
+
+            <script>
+                const log = document.getElementById('play-link');
+
+                $("#confirm_settings").click(function(){
+                    var time = $("#time").val();
+                    var link = "<a href='game.html?" + time + "'> Play ! </a>";
+                    
+                    log.innerHTML = "link to start :" + link ;
+                    
+                });  
+               
+            </script>
+
+
+
+
         </section>
-        
+
         <footer>
             <h1> The Wiki Game </h1>
             <div class="copyright">
-            Copyright 2020
+                Copyright 2020
             </div>
         </footer>
-        
+
     </body>
 </html>
