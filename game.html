@@ -63,17 +63,15 @@
                     
                     function loadPage(title) {
                         var url = 'https://en.wikipedia.org:443/api/rest_v1/page/html/' + encodeURIComponent(title);
-                        FirstPageTitle = title;
                         
-
-                        console.log(FirstPageTitle);
-                        console.log(TargetPageTitle);
+                        FirstPageTitle = title;
                         if(FirstPageTitle == TargetPageTitle){
                             console.log("success");
                             document.getElementById('word-to-find').innerText = "Sucess !";
                         }
                         else{
                             document.getElementById('word-to-find').innerText = "word to find : " + TargetPageTitle;
+                            // fetch the article data
                             return $.ajax(url).then(function (data) {
                                 var doc = (new DOMParser()).parseFromString(data, 'text/html');
                                 // Use mediawiki content stylesheet
@@ -87,6 +85,18 @@
                                     $content.attr(attr.name, attr.value);
                                 });
                                 $content.append(Array.from(doc.body.children));
+                                // fetch the article data
+                                //supress some useless article section
+                                var x = document.getElementById("External_links");
+                                x.parentElement.style.display = "none";
+                                x = document.getElementById("References");
+                                x.parentElement.style.display = "none";
+                                x = document.getElementById("Further_reading");
+                                x.parentElement.style.display = "none";
+                                x = document.getElementById("Notes");
+                                x.parentElement.style.display = "none";
+                                x = document.getElementById("Citation");
+                                x.parentElement.style.display = "none";
                                 // Handle redirects
                                 $('link[rel="mw:PageProp/redirect"]').replaceWith(function() {
                                     return $('<a rel="mw:WikiLink">REDIRECT</a>').attr('href', $(this).attr('href'));

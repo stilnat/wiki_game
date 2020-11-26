@@ -10,8 +10,7 @@
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.32.2/es6-shim.min.js"> </script>
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/jquery.history.js"> </script>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
         <link rel="stylesheet" href="//en.wikipedia.org/w/load.php?modules=mediawiki.legacy.commonPrint,shared|mediawiki.skinning.elements|mediawiki.skinning.content|mediawiki.skinning.interface|skins.vector.styles|site|mediawiki.skinning.content.parsoid|ext.cite.style&amp;only=styles&amp;skin=vector"/>
         <!--<link rel="stylesheet" href="styles.css"> -->
     </head>
@@ -50,6 +49,19 @@
                             $content.attr(attr.name, attr.value);
                         });
                         $content.append(Array.from(doc.body.children));
+                        
+                        //supress some useless article section
+                        var x = document.getElementById("External_links");
+                        x.parentElement.style.display = "none";
+                        x = document.getElementById("References");
+                        x.parentElement.style.display = "none";
+                        x = document.getElementById("Further_reading");
+                        x.parentElement.style.display = "none";
+                        x = document.getElementById("Notes");
+                        x.parentElement.style.display = "none";
+                        x = document.getElementById("Citation");
+                        x.parentElement.style.display = "none";
+                        
                         // Handle redirects
                         $('link[rel="mw:PageProp/redirect"]').replaceWith(function() {
                             return $('<a rel="mw:WikiLink">REDIRECT</a>').attr('href', $(this).attr('href'));
