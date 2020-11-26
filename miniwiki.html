@@ -50,17 +50,7 @@
                         });
                         $content.append(Array.from(doc.body.children));
                         
-                        //supress some useless article section
-                        var x = document.getElementById("External_links");
-                        x.parentElement.style.display = "none";
-                        x = document.getElementById("References");
-                        x.parentElement.style.display = "none";
-                        x = document.getElementById("Further_reading");
-                        x.parentElement.style.display = "none";
-                        x = document.getElementById("Notes");
-                        x.parentElement.style.display = "none";
-                        x = document.getElementById("Citation");
-                        x.parentElement.style.display = "none";
+                        
                         
                         // Handle redirects
                         $('link[rel="mw:PageProp/redirect"]').replaceWith(function() {
