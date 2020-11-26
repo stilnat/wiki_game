@@ -12,11 +12,13 @@
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-        <!--<link rel="stylesheet" href="styles.css"> -->
+        
+        <link rel="stylesheet" href="//en.wikipedia.org/w/load.php?modules=mediawiki.legacy.commonPrint,shared|mediawiki.skinning.elements|mediawiki.skinning.content|mediawiki.skinning.interface|skins.vector.styles|site|mediawiki.skinning.content.parsoid|ext.cite.style&amp;only=styles&amp;skin=vector"/>
+        <link rel="stylesheet" href="game-styles.css">
     </head>
 
     <body>
-        <header>
+        <header id = "header-game">
             <div class="wrapper">
                 <div>
                     <div id="header-image">
@@ -41,8 +43,9 @@
         
         <section id="game-info">
 
-            <p style="font-size: 40px" id = "word-to-find"> word to find : </p>
+            <p style="font-size: 40px" id = "word-to-find"> Article to find : </p>
         </section>
+        
 
         <section id="wiki-pages">
             <div class='container'>
@@ -70,7 +73,7 @@
                             document.getElementById('word-to-find').innerText = "Sucess !";
                         }
                         else{
-                            document.getElementById('word-to-find').innerText = "word to find : " + TargetPageTitle;
+                            document.getElementById('word-to-find').innerText = "Article to find: " + TargetPageTitle;
                             // fetch the article data
                             return $.ajax(url).then(function (data) {
                                 var doc = (new DOMParser()).parseFromString(data, 'text/html');
@@ -85,7 +88,19 @@
                                     $content.attr(attr.name, attr.value);
                                 });
                                 $content.append(Array.from(doc.body.children));
-                                // fetch the article data
+
+                                
+                                // Handle redirects
+                                $('link[rel="mw:PageProp/redirect"]').replaceWith(function() {
+                                    return $('<a rel="mw:WikiLink">REDIRECT</a>').attr('href', $(this).attr('href'));
+                                });
+                                // Add click handler to wiki links
+                                $('a[rel="mw:WikiLink"]', $content).click(function (e) {
+                                    var newTitle = extractTitle($(e.currentTarget).attr('href'));
+                                    History.pushState(null, newTitle, "?title="+encodeURIComponent(newTitle));
+                                    return false; // Don't use normal href handler
+                                });
+                                
                                 //supress some useless article section
                                 var x = document.getElementById("External_links");
                                 x.parentElement.style.display = "none";
@@ -97,16 +112,6 @@
                                 x.parentElement.style.display = "none";
                                 x = document.getElementById("Citation");
                                 x.parentElement.style.display = "none";
-                                // Handle redirects
-                                $('link[rel="mw:PageProp/redirect"]').replaceWith(function() {
-                                    return $('<a rel="mw:WikiLink">REDIRECT</a>').attr('href', $(this).attr('href'));
-                                });
-                                // Add click handler to wiki links
-                                $('a[rel="mw:WikiLink"]', $content).click(function (e) {
-                                    var newTitle = extractTitle($(e.currentTarget).attr('href'));
-                                    History.pushState(null, newTitle, "?title="+encodeURIComponent(newTitle));
-                                    return false; // Don't use normal href handler
-                                });
                             });
                         }
                     }
