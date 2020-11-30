@@ -5,6 +5,7 @@
     <head>  <!-- Tout ce qui est pas dans le contenu -->
         <title> game setup </title> <!-- Titre de l'onglet -->
 
+        <script src="game_function.js"> </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
         <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"> </script>
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.32.2/es6-shim.min.js"> </script>
@@ -12,10 +13,9 @@
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-        
         <link rel="stylesheet" href="//en.wikipedia.org/w/load.php?modules=mediawiki.legacy.commonPrint,shared|mediawiki.skinning.elements|mediawiki.skinning.content|mediawiki.skinning.interface|skins.vector.styles|site|mediawiki.skinning.content.parsoid|ext.cite.style&amp;only=styles&amp;skin=vector"/>
-        
         <link rel="stylesheet" href="game-styles.css">
+
     </head>
 
     <body>
@@ -40,42 +40,22 @@
                 </nav>
             </div>
         </header>
-        
+
         <section id="game-info">
 
             <p style="font-size: 40px" id = "word-to-find"> Article to find : </p>
-            
+
             <p id="timer"> time left :  </p>
-            
+
             <script>
-            // Set the date we're counting down to
-            var queryString = location.search.substring(1);
-            var timeAhead  = queryString.split("|")[0];
-            
-            end = Date.now() + timeAhead*1000;
-                
-
-            // Update the count down every 1 second
-            var x = setInterval(function() {
-
-              // Get today's date and time
-              var now = Date.now();
-
-              // Find the distance between now and the count down date
-              var distance = end - now;
-
-              // Output the result in an element with id="timer"
-              document.getElementById("timer").innerHTML = "time left : "+Math.floor(distance / 1000) + "s";
-
-              // If the count down is over, write some text 
-              if (distance < 0) {
-                clearInterval(x);
-                document.getElementById("timer").innerHTML = "EXPIRED";
-              }
-            }, 1000);
+                // warning : when refreshed break the timer or reset it
+                // this script should not be applied on refresh
+                var queryString = location.search.substring(1); 
+                var timeAhead  = queryString.split("|")[0];
+                load_timer(timeAhead);
             </script>
         </section>
-        
+
 
         <section id="wiki-pages">
             <div class='container'>
@@ -83,101 +63,29 @@
                 <div id="content"></div>
 
                 <script>
-                    FirstPageTitle ='';
-                    TargetPageTitle = '';
-                    
+                    console.log("hello");
+
                     var titleElem = document.getElementById('wiki-title');
                     var contentElem = document.getElementById('content');
                     var stylesheetElem = document.getElementById('style');
-                    
-                    function extractTitle(title) {
-                        return title.replace(/(^.\/)|(#.*$)/g, '').replace(/_/g, ' ');
-                    }
-                    
-                    function loadPage(title) {
-                        var url = 'https://en.wikipedia.org:443/api/rest_v1/page/html/' + encodeURIComponent(title);
-                        
-                        FirstPageTitle = title;
-                        if(FirstPageTitle == TargetPageTitle){
-                            console.log("success");
-                            document.getElementById('word-to-find').innerText = "Sucess !";
-                        }
-                        else{
-                            document.getElementById('word-to-find').innerText = "Article to find: " + TargetPageTitle;
-                            // fetch the article data
-                            return $.ajax(url).then(function (data) {
-                                var doc = (new DOMParser()).parseFromString(data, 'text/html');
-                                // Use mediawiki content stylesheet
-                                $(stylesheetElem).remove();
-                                stylesheetElem = doc.querySelector('head link[rel="stylesheet"]');
-                                $('head').append(stylesheetElem);
-                                // Update title and content
-                                $(titleElem).text(doc.title.replace(/^User:Cscott\//, '').replace(/_/g, ' '));
-                                var $content = $(contentElem).empty();
-                                Array.from(doc.body.attributes).forEach(function (attr) {
-                                    $content.attr(attr.name, attr.value);
-                                });
-                                $content.append(Array.from(doc.body.children));
 
-                                
-                                // Handle redirects
-                                $('link[rel="mw:PageProp/redirect"]').replaceWith(function() {
-                                    return $('<a rel="mw:WikiLink">REDIRECT</a>').attr('href', $(this).attr('href'));
-                                });
-                                // Add click handler to wiki links
-                                $('a[rel="mw:WikiLink"]', $content).click(function (e) {
-                                    var newTitle = extractTitle($(e.currentTarget).attr('href'));
-                                    History.pushState(null, newTitle, "?title="+encodeURIComponent(newTitle));
-                                    return false; // Don't use normal href handler
-                                });
-                                
-                                //supress some useless article section
-                                var x = document.getElementById("External_links");
-                                if(x != null)
-                                    x.parentElement.style.display = "none";
-                                
-                                x = document.getElementById("References");
-                                if(x != null)
-                                    x.parentElement.style.display = "none";
-                                x = document.getElementById("Further_reading");
-                                if(x != null)
-                                    x.parentElement.style.display = "none";
-                                x = document.getElementById("Notes");
-                                if(x != null)
-                                    x.parentElement.style.display = "none";
-                                x = document.getElementById("Citation");
-                                if(x != null)
-                                    x.parentElement.style.display = "none";
-                                x = document.getElementById("References_and_Notes");
-                                if(x != null)
-                                    x.parentElement.style.display = "none";
-                            });
-                        }
-                    }
-
-                    // Make the back button work
-                    History.replaceState(null, '', ''); // Ensure a state change later
-
-                    $(window).on('statechange', function() {
-                        loadPage(History.getState().title);
-                    });
-
-                    //fetch the target page
                     $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function(data){
                         TargetPageTitle = data.query.random[0].title;
                         // TargetPageTitle = "Jesus"
                     });
+                    
+                    var title = fetchFirstPage();
 
-                    //fetch the random start page
-                    $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function(data){
-                        FirstPageTitle = data.query.random[0].title;
-                        // FirstPageTitle = 'Science';
-                        // Load the start page
-                        History.replaceState(null, FirstPageTitle, '');
+                    // Make the back button work
+                    History.replaceState(null, '', ''); // Ensure a state change later
+
+                    $(window).on('statechange', function () {
+                        console.log("in statechange : " + TargetPageTitle);
+                        loadPage(History.getState().title, TargetPageTitle, titleElem, contentElem, stylesheetElem);
                     });
+
                 </script>
-                
-                
+
             </div>
         </section>
 
