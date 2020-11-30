@@ -50,38 +50,45 @@
             <script>
                 // warning : when refreshed break the timer or reset it
                 // this script should not be applied on refresh
+
                 var queryString = location.search.substring(1); 
                 var timeAhead  = queryString.split("|")[0];
                 load_timer(timeAhead);
+                
+
+
             </script>
         </section>
 
 
         <section id="wiki-pages">
             <div class='container'>
-                <h1 id="wiki-title">MiniWiki</h1>
+                <h1 id="wiki-title"></h1>
                 <div id="content"></div>
 
                 <script>
-                    console.log("hello");
 
                     var titleElem = document.getElementById('wiki-title');
                     var contentElem = document.getElementById('content');
                     var stylesheetElem = document.getElementById('style');
 
-                    $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function(data){
-                        TargetPageTitle = data.query.random[0].title;
-                        // TargetPageTitle = "Jesus"
-                    });
                     
-                    var title = fetchFirstPage();
+                    var firstPageRequest = fetchFeaturedArticle();
+                    var targetPageRequest = fetchFeaturedArticle();
 
                     // Make the back button work
                     History.replaceState(null, '', ''); // Ensure a state change later
 
                     $(window).on('statechange', function () {
-                        console.log("in statechange : " + TargetPageTitle);
-                        loadPage(History.getState().title, TargetPageTitle, titleElem, contentElem, stylesheetElem);
+                        console.log('state changed');
+                        $.when(targetPageRequest,firstPageRequest).done(function(title, targetTitle) {
+                            
+                            console.log("in when: " + targetTitle);
+                            console.log("history title : " + History.getState().title);
+                            loadPage(History.getState().title, targetTitle, titleElem, contentElem, stylesheetElem);
+                        });
+
+
                     });
 
                 </script>

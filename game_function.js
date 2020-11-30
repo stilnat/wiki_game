@@ -72,7 +72,7 @@ function loadPage(title, TargetPageTitle, titleElem, contentElem, stylesheetElem
 
     if (title === TargetPageTitle) {
         console.log("success");
-        document.getElementById('word-to-find').innerText = "Sucess !";
+        document.getElementById('word-to-find').innerText = "Success !";
     } else {
         document.getElementById('word-to-find').innerText = "Article to find: " + TargetPageTitle;
         // fetch the article data
@@ -109,26 +109,48 @@ function loadPage(title, TargetPageTitle, titleElem, contentElem, stylesheetElem
 
 function fetchFirstPage() { //fetch the random start page
     "use strict";
-    var title;
-    $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function (data) {
-        title = data.query.random[0].title;
-        // title = 'Science';
+    return $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function (data) {
+        var title = data.query.random[0].title;
         // Load the start page
         History.replaceState(null, title, '');
-    });
+        return title;
+        // title = 'Science';
 
-    return title;
+    });
+}
+
+function randomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
 
-function fetchTargetPage() { //fetch the random start page
-    var TargetPageTitle;
-    $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function(data){
-        TargetPageTitle = data.query.random[0].title;
-        // TargetPageTitle = "Jesus"
+function fetchFeaturedArticle() { 
+    "use strict";
+    // construct the random time from 2010-01-01 to 2019-12-30
+
+    var date = randomDate(new Date("2010-01-25T00:00:00Z"), new Date("2019-12-30T00:00:00Z"));
+    var timestamp = date.toISOString();
+
+     return $.ajax('https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&origin=*&cmtitle=Category:Featured_articles&cmlimit=50&cmsort=timestamp&cmstart='+ timestamp +'&format=json').then(function (data) {
+        console.log(data);
+        console.log(data.query.categorymembers.length);
+
+        // choose an article randomly from the requested list of articles
+        var lastArticleNb = data.query.categorymembers.length;
+        var ArticleNb = Math.floor(Math.random() * lastArticleNb);
+        var title = data.query.categorymembers[ArticleNb].title;
+        console.log(title);
+        History.replaceState(null, title, '');
+        return title;
+
+       
     });
-    return TargetPageTitle;
+    
+
 }
+
+
+
 
 
 function sleep(milliseconds) {
