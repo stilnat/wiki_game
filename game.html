@@ -71,27 +71,35 @@
                     var firstPageRequest, targetPageRequest;                       
 
 
-                    firstPageRequest = fetchFeaturedArticle();
-
-                    if(sessionStorage.getItem('target_title') === null){
-                        targetPageRequest = fetchFeaturedArticle();
-                    }
                     
+
+                    if(sessionStorage.getItem('target_title') === null && sessionStorage.getItem('target') === null){
+                        targetPageRequest = fetchFeaturedArticle();
+                        firstPageRequest = fetchFeaturedArticle();
+                    }
+
                     // Make the back button work
                     History.replaceState(null, '', ''); // Ensure a state change later
 
-                    $(window).on('statechange', function () {
-                        
-                        if(sessionStorage.getItem('target_title') !== null){
+                    $(window).on('statechange load', function () {
+                        console.log("state changed");
+
+                        if(sessionStorage.getItem('target_title') !== null && sessionStorage.getItem('title') !== null ){
+                            console.log("page load");
+                            loadPage(sessionStorage.getItem('title'), sessionStorage.getItem('target_title'), titleElem, contentElem, stylesheetElem);
                             
-                            $.when(firstPageRequest).done(function(title) {
-                                loadPage(History.getState().title, sessionStorage.getItem('target_title'), titleElem, contentElem, stylesheetElem);
-                            });
+                            //console.log(History.getState().title);
+                            // loadPage(History.getState().title, sessionStorage.getItem('target_title'), titleElem, contentElem, stylesheetElem);
+                            
+
                         }
                         else {
                             $.when(targetPageRequest,firstPageRequest).done(function(title, targetTitle) {
                                 sessionStorage.setItem('target_title', targetTitle);
-                                loadPage(History.getState().title, targetTitle, titleElem, contentElem, stylesheetElem);
+                                sessionStorage.setItem('title', title);
+                                console.log(title);
+                                console.log(targetTitle);
+                                loadPage(title, targetTitle, titleElem, contentElem, stylesheetElem);
                             });
                         }
 

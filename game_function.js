@@ -75,6 +75,7 @@ function loadPage(title, TargetPageTitle, titleElem, contentElem, stylesheetElem
             // Add click handler to wiki links
             $('a[rel="mw:WikiLink"]', $content).click(function (e) {
                 var newTitle = extractTitle($(e.currentTarget).attr('href'));
+                sessionStorage.setItem('title', newTitle);
                 History.pushState(null, newTitle, "?title=" + encodeURIComponent(newTitle));
                 return false; // Don't use normal href handler
             });
