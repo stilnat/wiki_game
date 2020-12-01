@@ -54,10 +54,10 @@
 
                 $("#confirm_settings").click(function(){
                     var time = $("#time").val();
-                    var link = "<a href='game.html?" + time + "'> Play ! </a>";
-                    
-                    log.innerHTML = "link to start :" + link ;
-                    
+                    console.log("time entered" + time);
+                    sessionStorage.setItem('max_time', time);
+                    var link = "<a href='game.html'> Play ! </a>";                  
+                    log.innerHTML = "link to start :" + link ;              
                 });  
                
             </script>

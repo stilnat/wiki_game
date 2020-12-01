@@ -48,15 +48,8 @@
             <p id="timer"> time left :  </p>
 
             <script>
-                // warning : when refreshed break the timer or reset it
-                // this script should not be applied on refresh
-
-                var queryString = location.search.substring(1); 
-                var timeAhead  = queryString.split("|")[0];
-                load_timer(timeAhead);
-                
-
-
+                max_time = +sessionStorage.getItem('max_time');
+                countdown(max_time);
             </script>
         </section>
 
@@ -72,21 +65,36 @@
                     var contentElem = document.getElementById('content');
                     var stylesheetElem = document.getElementById('style');
 
-                    
-                    var firstPageRequest = fetchFeaturedArticle();
-                    var targetPageRequest = fetchFeaturedArticle();
+                    var savedFirstPage = sessionStorage.getItem('saved_first_page');
+                    var savedTargetPage = sessionStorage.getItem('saved_target_page');
 
+                    var firstPageRequest, targetPageRequest;                       
+
+
+                    firstPageRequest = fetchFeaturedArticle();
+
+                    if(sessionStorage.getItem('target_title') === null){
+                        targetPageRequest = fetchFeaturedArticle();
+                    }
+                    
                     // Make the back button work
                     History.replaceState(null, '', ''); // Ensure a state change later
 
                     $(window).on('statechange', function () {
-                        console.log('state changed');
-                        $.when(targetPageRequest,firstPageRequest).done(function(title, targetTitle) {
+                        
+                        if(sessionStorage.getItem('target_title') !== null){
                             
-                            console.log("in when: " + targetTitle);
-                            console.log("history title : " + History.getState().title);
-                            loadPage(History.getState().title, targetTitle, titleElem, contentElem, stylesheetElem);
-                        });
+                            $.when(firstPageRequest).done(function(title) {
+                                loadPage(History.getState().title, sessionStorage.getItem('target_title'), titleElem, contentElem, stylesheetElem);
+                            });
+                        }
+                        else {
+                            $.when(targetPageRequest,firstPageRequest).done(function(title, targetTitle) {
+                                sessionStorage.setItem('target_title', targetTitle);
+                                loadPage(History.getState().title, targetTitle, titleElem, contentElem, stylesheetElem);
+                            });
+                        }
+
 
 
                     });

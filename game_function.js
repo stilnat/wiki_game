@@ -5,29 +5,6 @@
 /*global $, jQuery, alert, History, console, DOMParser*/
 
 
-function load_timer(seconds) {
-    "use strict";
-    // Set the date we're counting down to
-    var x, end, now, distance;
-    end = Date.now() + seconds * 1000;
-
-    // Update the count down every 1 second
-    x = setInterval(function () {
-
-        now = Date.now(); // Get today's date and time
-        distance = end - now; // Find the distance between now and the count down date
-
-        // Output the result in an element with id="timer"
-        document.getElementById("timer").innerHTML = "time left : " + Math.floor(distance / 1000) + "s";
-
-        // If the count down is over, write some text 
-        if (distance < 0) {
-            clearInterval(x);
-            document.getElementById("timer").innerHTML = "EXPIRED";
-        }
-    }, 1000);
-}
-
 function supress_useless_article_sections() {
     "use strict";
     //supress some useless article section
@@ -115,7 +92,6 @@ function fetchFirstPage() { //fetch the random start page
         History.replaceState(null, title, '');
         return title;
         // title = 'Science';
-
     });
 }
 
@@ -127,37 +103,57 @@ function randomDate(start, end) {
 function fetchFeaturedArticle() { 
     "use strict";
     // construct the random time from 2010-01-01 to 2019-12-30
-
     var date = randomDate(new Date("2010-01-25T00:00:00Z"), new Date("2019-12-30T00:00:00Z"));
     var timestamp = date.toISOString();
 
-     return $.ajax('https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&origin=*&cmtitle=Category:Featured_articles&cmlimit=50&cmsort=timestamp&cmstart='+ timestamp +'&format=json').then(function (data) {
-        console.log(data);
-        console.log(data.query.categorymembers.length);
-
+    return $.ajax('https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&origin=*&cmtitle=Category:Featured_articles&cmlimit=50&cmsort=timestamp&cmstart='+ timestamp +'&format=json').then(function (data) {
         // choose an article randomly from the requested list of articles
         var lastArticleNb = data.query.categorymembers.length;
         var ArticleNb = Math.floor(Math.random() * lastArticleNb);
         var title = data.query.categorymembers[ArticleNb].title;
-        console.log(title);
         History.replaceState(null, title, '');
         return title;
-
-       
     });
-    
+
 
 }
 
+function countdown(time_p) {
+   
+    var saved_countdown = sessionStorage.getItem('saved_countdown');
+    var time;
 
+    if(saved_countdown == null) {
+        // Set the time we're counting down to using the time allowed
+        var new_countdown = new Date().getTime() + (time_p + 2) * 1000;
+        time = new_countdown;
+        sessionStorage.setItem('saved_countdown', new_countdown);
+        
+    } else {
+        time = saved_countdown;
+    }
+    
+    // Update the count down every 1 second
+    var x = setInterval(() => {
 
+        // Get today's date and time
+        var now = new Date().getTime();
+        
+        // Find the distance between now and the allowed time
+        var distance = time - now;
 
+        // Time counter
+        var counter = Math.floor(distance/ 1000);
 
-function sleep(milliseconds) {
-    "use strict";
-    var date = Date.now();
-    var currentDate = null;
-    do {
-        currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
+        // Output the result in an element with id="demo"
+        document.getElementById("timer").innerHTML = "time left : " + counter + " s";
+
+        // If the count down is over, write some text 
+        if (counter <= 0) {
+            clearInterval(x);
+            sessionStorage.removeItem('saved_countdown');
+            sessionStorage.removeItem('max_time');
+            document.getElementById("timer").innerHTML = "EXPIRED";
+        }
+    }, 1000);
 }
