@@ -48,9 +48,12 @@ function loadPage(title, TargetPageTitle, titleElem, contentElem, stylesheetElem
     url = 'https://en.wikipedia.org:443/api/rest_v1/page/html/' + encodeURIComponent(title);
 
     if (title === TargetPageTitle) {
+        console.log("success title :" + title);
+        console.log("success target :" + TargetPageTitle);
         console.log("success");
         document.getElementById('word-to-find').innerText = "Success !";
     } else {
+        console.log("target page title after load page = " + TargetPageTitle)
         document.getElementById('word-to-find').innerText = "Article to find: " + TargetPageTitle;
         // fetch the article data
         return $.ajax(url).then(function (data) {
