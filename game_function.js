@@ -40,6 +40,11 @@ function extractTitle(title) {
     return title.replace(/(^.\/)|(#.*$)/g, '').replace(/_/g, ' ');
 }
 
+function returnSettings() {
+    var button =  document.getElementById('button-return');
+    document.getElementById("button-return").style.display = "inline-block";
+}
+
 
 function loadPage(title, TargetPageTitle, titleElem, contentElem, stylesheetElem) {
     "use strict";
@@ -51,7 +56,9 @@ function loadPage(title, TargetPageTitle, titleElem, contentElem, stylesheetElem
         console.log("success title :" + title);
         console.log("success target :" + TargetPageTitle);
         console.log("success");
-        document.getElementById('word-to-find').innerText = "Success !";
+        document.getElementById('word-to-find').innerText = "Well played !";
+        document.getElementById("wiki-pages").innerHTML = "";
+        returnSettings();
     } else {
         console.log("target page title after load page = " + TargetPageTitle)
         document.getElementById('word-to-find').innerText = "Article to find: " + TargetPageTitle;
@@ -123,7 +130,7 @@ function fetchFeaturedArticle() {
 }
 
 function countdown(time_p) {
-   
+
     var saved_countdown = sessionStorage.getItem('saved_countdown');
     var time;
 
@@ -132,17 +139,17 @@ function countdown(time_p) {
         var new_countdown = new Date().getTime() + (time_p + 2) * 1000;
         time = new_countdown;
         sessionStorage.setItem('saved_countdown', new_countdown);
-        
+
     } else {
         time = saved_countdown;
     }
-    
+
     // Update the count down every 1 second
     var x = setInterval(() => {
 
         // Get today's date and time
         var now = new Date().getTime();
-        
+
         // Find the distance between now and the allowed time
         var distance = time - now;
 
@@ -158,6 +165,9 @@ function countdown(time_p) {
             sessionStorage.removeItem('saved_countdown');
             sessionStorage.removeItem('max_time');
             document.getElementById("timer").innerHTML = "EXPIRED";
+            document.getElementById('word-to-find').innerText = "Looser !";
+            document.getElementById("wiki-pages").innerHTML = "";
+            returnSettings();
         }
     }, 1000);
 }

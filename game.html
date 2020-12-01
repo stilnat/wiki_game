@@ -47,6 +47,8 @@
 
             <p id="timer"> time left :  </p>
 
+            <a href="set-game.html" class="button"  style = 'display: none' id='button-return'>play again</a>
+
             <script>
                 max_time = +sessionStorage.getItem('max_time');
                 countdown(max_time);
@@ -79,7 +81,7 @@
                     }
 
                     // Make the back button work
-                    // History.replaceState(null, '', ''); // Ensure a state change later
+                    // eHistory.replaceState(null, '', ''); // Ensure a state change later
 
                     $(window).on('statechange load', function () {
 
