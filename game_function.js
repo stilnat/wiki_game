@@ -4,7 +4,8 @@
 /*jslint browser: true, regexp: true*/
 /*global $, jQuery, alert, History, console, DOMParser*/
 
-
+/* some article sections of wikipedia have exterior links, which could break the game
+this function aims to avoid displaying those specific sections */ 
 function supress_useless_article_sections() {
     "use strict";
     //supress some useless article section
@@ -35,32 +36,34 @@ function supress_useless_article_sections() {
     }
 }
 
+// extract the new title after redirection
 function extractTitle(title) {
     "use strict";
     return title.replace(/(^.\/)|(#.*$)/g, '').replace(/_/g, ' ');
 }
 
+// display the button to return to the parameter setting at the end of the game
 function returnSettings() {
     var button =  document.getElementById('button-return');
     document.getElementById("button-return").style.display = "inline-block";
 }
 
+// function executed in case of success
+function Success(){
+    document.getElementById('word-to-find').innerText = "Well played !";
+    document.getElementById("wiki-pages").innerHTML = "";
+    returnSettings();
+}
 
+/* function responsible for loading wikipedia contents, as well as handling redirection, wikilinks and sucess or failure */
 function loadPage(title, TargetPageTitle, titleElem, contentElem, stylesheetElem) {
     "use strict";
     var url, doc;
-
     url = 'https://en.wikipedia.org:443/api/rest_v1/page/html/' + encodeURIComponent(title);
 
     if (title === TargetPageTitle) {
-        console.log("success title :" + title);
-        console.log("success target :" + TargetPageTitle);
-        console.log("success");
-        document.getElementById('word-to-find').innerText = "Well played !";
-        document.getElementById("wiki-pages").innerHTML = "";
-        returnSettings();
+        Success();
     } else {
-        console.log("target page title after load page = " + TargetPageTitle)
         document.getElementById('word-to-find').innerText = "Article to find: " + TargetPageTitle;
         // fetch the article data
         return $.ajax(url).then(function (data) {
@@ -95,22 +98,23 @@ function loadPage(title, TargetPageTitle, titleElem, contentElem, stylesheetElem
     }
 }
 
-function fetchFirstPage() { //fetch the random start page
+//fetch a completely random page
+function fetchFirstPage() { 
     "use strict";
     return $.ajax('https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=random&continue=-||&rnnamespace=0&rnlimit=1').then(function (data) {
         var title = data.query.random[0].title;
         // Load the start page
         History.replaceState(null, title, '');
         return title;
-        // title = 'Science';
     });
 }
 
+// return a random date between start and end date
 function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
-
+// return a random title of a featured article
 function fetchFeaturedArticle() { 
     "use strict";
     // construct the random time from 2010-01-01 to 2019-12-30
@@ -125,10 +129,9 @@ function fetchFeaturedArticle() {
         History.replaceState(null, title, '');
         return title;
     });
-
-
 }
 
+// handle the counter and events when the counter reached 0
 function countdown(time_p) {
 
     var saved_countdown = sessionStorage.getItem('saved_countdown');
@@ -156,14 +159,12 @@ function countdown(time_p) {
         // Time counter
         var counter = Math.floor(distance/ 1000);
 
-        // Output the result in an element with id="demo"
+        // Output the result in an element
         document.getElementById("timer").innerHTML = "time left : " + counter + " s";
 
         // If the count down is over, write some text 
         if (counter <= 0) {
             clearInterval(x);
-            sessionStorage.removeItem('saved_countdown');
-            sessionStorage.removeItem('max_time');
             document.getElementById("timer").innerHTML = "EXPIRED";
             document.getElementById('word-to-find').innerText = "Looser !";
             document.getElementById("wiki-pages").innerHTML = "";

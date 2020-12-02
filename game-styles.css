@@ -1,8 +1,6 @@
 /* GENERAL*/
 
 
-
-
 .wrapper{ width:  940px; margin : 0 auto; padding : 0 10px;}
 
 .button-wrapper{background-color: darkgray}
@@ -12,9 +10,6 @@ body {background-color: white;}
 p {font-size: 14px;}
 
 
-form{ margin: 60px 0 20px 0;}
-
-input[type = "text"]{ padding:10px; font-size: 20px; margin-right: 30px; border: 2px solid #ddd; border-radius: 3px;}
 
 /*FOOTER*/
  
@@ -30,7 +25,7 @@ footer h1{color: #c9e6fd; text-align: center; padding-top : 80px;
 
 /*HEADER*/
 
-#header-game h1 { font-family:American Typewriter, serif; text-transform: uppercase; color: rgb(70,70,70); font-size: 35px;}
+#header-game h1 { font-family:American Typewriter, serif; text-transform: uppercase; color: rgb(70,70,70); font-size: 35px;float: left; text-align: center; height: 150px; width: 150px;}
 
 #header-game ul{ list-style:none;}
 
@@ -42,7 +37,6 @@ header {background-color: rgb(245,245,245); height : 150px; padding-bottom: 20px
 
 #header-image{height: 150px; width: 150px; margin-right: 0px; background: url('images/wikilogo.png')  no-repeat center; background-size: 120px 120px; float: left;}
 
-#header-title{float: left; text-align: center; height: 150px; width: 150px;}
 
 header nav{float: right; margin-top: 50px;}
 
@@ -58,3 +52,9 @@ header nav ul li a{ text-transform: uppercase; margin-right: 30px;}
 /*GAME-INFO*/
 
 #timer{font-size: 20px; text-align: center;}
+
+#button-return{font-size: 20px; text-align: center; background-color: gray; color: #c9e6fd; border : 2px solid rgb(151,206,236); padding: 5px; margin: 10px; }
+
+#game-info{background-color: rgb(245,245,245);}
+
+#word-to-find{ font-family:American Typewriter, serif; text-transform: uppercase; color: rgb(70,70,70); font-size: 15px; text-align: center}
